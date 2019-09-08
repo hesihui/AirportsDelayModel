@@ -97,6 +97,7 @@ _class_ `graphflow.GrapgFlow(idx2airport,airport2idx,idx2time_stamp,time_stamp2i
                  pre_data,G,dt,grid = None ,start_time = None,end_time = None,DelayRatio=None)`
 
 _Attributes_
+
 | Attributes |Type| Description |
 | --- | ----------- |----|
 |dt| pd.TimeDelta  |`1D` or `1H` so far|
@@ -135,7 +136,9 @@ _Methods_
 | sub_graph_flow(start_time = None,end_time = None,sub_nodes = None, edges = None)|  TODO|
 ### graphflow.GraphFlow.describe
 `GraphFlow.describe()`
+
 _parameters_`None`
+
  _return_ `None`
  
  _description_
@@ -146,13 +149,16 @@ _parameters_`None`
 `GraphFlow.real_format(df)`
 
  _parameters_ TODO
+ 
 _return_ `pd.DataFrame`
 
 _description_
  convert a `DataFrame` object `df`into columns by times stamps and index by airports names
 ### graphflow.GraphFlow.draw_network_attr
 `GraphFlow.draw_network_attr(self, nodes_attr = None , edges_attr = 'weight' , size = 6 , with_pos = True)`
+
 _parameters_ TODO
+
  _return_ `None`
  
 _description_
@@ -162,6 +168,7 @@ draw undirected graph `fun_1_to_undir_G(G)` try several times to get a better di
 `GraphFlow.sub_graph_flow(start_time = None,end_time = None,sub_nodes = None, edges = None)`
 
 _parameters_ TODO
+
 _return_  `graphflow.GraphFlow`
 
 _description_
@@ -174,7 +181,9 @@ Doing
 
 ### graphflow.test_index_gen
 `test_index_gen(time_stamp_threshhold = '2008-01-01 00:00:00-08:00',test_time_num = 1800, test_airport_num = 60)`
+
 _parameters_ TODO
+
 _return_ `test_date_index,test_airport_index`
 
 _description_
