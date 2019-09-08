@@ -14,7 +14,7 @@ A visualization module based on neworkx and pandas
 * pytz
 ### Installing
 
-Dowload the newest release [here]() to the root directory.
+Dowload the newest release [here](https://drive.google.com/file/d/1ISxgHh9LJaLB8z2IXwncf__86iTCxnz6/view?usp=sharing) to the root directory.
 
 ## Running the tests
 generate a top `GraphFlow` object `gf`
