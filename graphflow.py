@@ -22,19 +22,30 @@ def test_index_gen(time_stamp_threshhold = '2008-01-01 00:00:00-08:00',test_time
     test_date_index = random.sample(list(idx2time_stamp.keys())[time_stamp2idx[time_stamp_threshhold]:], k=test_time_num)
     return test_date_index,test_airport_index
 
+def test_index_gen(time_stamp_threshhold = '2008-01-01 00:00:00-08:00',test_time_num = 1800, test_airport_num = 60):
+    idx2airport=pd.read_csv("idx2airport.csv",index_col=0)['0'].to_dict()
+    idx2time_stamp=pd.read_csv("idx2time_stamp.csv",index_col=0)['0'].to_dict()
+    time_stamp2idx=pd.read_csv("time_stamp2idx.csv",index_col=0)['0'].to_dict()
+    random.seed(4)
+    test_airport_index = random.sample(idx2airport.keys(), k=test_airport_num)
+    test_date_index = random.sample(list(idx2time_stamp.keys())[time_stamp2idx[time_stamp_threshhold]:], k=test_time_num)
+    return test_date_index,test_airport_index
+
 def rwse_eval(pred_data, test_date_index, test_airport_index):
     arr_sche = pd.read_csv("ArrTotalFlights.csv",index_col=0)
     dep_sche = pd.read_csv("DepTotalFlights.csv",index_col=0)
     DelayRatio = pd.read_csv("DelayRatio.csv",index_col=0)
     p = DelayRatio.fillna(0).iloc[test_date_index, test_airport_index]
-    diff = p - pred_data
+    for i in test_airport_index:
+        p[str(i)] = p[str(i)].values - pred_data[str(i)].values
+        
     numerator = 0
     denominator = 0
     
     for i in test_airport_index:
         for j in test_date_index:
             weight_wae = np.abs(arr_sche[str(i)].values[j]) + np.abs(arr_sche[str(i)].values[j])
-            numerator +=  (np.abs(diff[str(i)].loc[j])**2) * (weight_wae**2)
+            numerator +=  (np.abs(p[str(i)].loc[j])**2) * (weight_wae**2)
             
     for i in test_airport_index:
         for j in test_date_index:
@@ -48,14 +59,15 @@ def wae_eval(pred_data,test_date_index,test_airport_index):
     dep_sche = pd.read_csv("DepTotalFlights.csv",index_col=0)
     DelayRatio = pd.read_csv("DelayRatio.csv",index_col=0)
     p = DelayRatio.fillna(0).iloc[test_date_index, test_airport_index]
-    diff = p - pred_data
+    for i in test_airport_index:
+        p[str(i)] = p[str(i)].values - pred_data[str(i)].values
     numerator = 0
     denominator = 0
         
     for i in test_airport_index:
         for j in test_date_index:
             weight_wae = np.abs(arr_sche[str(i)].values[j]) + np.abs(arr_sche[str(i)].values[j])
-            numerator +=  np.abs(diff[str(i)].loc[j]) * weight_wae
+            numerator +=  np.abs(p[str(i)].loc[j]) * weight_wae
             
     for i in test_airport_index:
         for j in test_date_index:
@@ -67,7 +79,7 @@ def wae_eval(pred_data,test_date_index,test_airport_index):
 def model_evaluation(pred_data, test_date_index, test_airport_index):
     DelayRatio=pd.read_csv("DelayRatio.csv",index_col=0)
     
-    mae_score = np.mean(mae(DelayRatio.fillna(0).iloc[test_date_index, test_airport_index],pred_data,axis=0))
+    mae_score = np.mean(mae(DelayRatio.fillna(0).iloc[test_date_index, test_airport_index],pred_data.fillna(0),axis=0))
     print ('mae metric: ',mae_score)
     
     rmse_score = np.mean(mse(DelayRatio.fillna(0).iloc[test_date_index, test_airport_index],pred_data,axis=0))**0.5
@@ -76,7 +88,7 @@ def model_evaluation(pred_data, test_date_index, test_airport_index):
     wae_score = wae_eval(pred_data, test_date_index, test_airport_index)
     print ('wae metric: ', wae_score)
     
-    rwse_score = rwse(pred_data, test_date_index, test_airport_index)
+    rwse_score = rwse_eval(pred_data, test_date_index, test_airport_index)
     print ('rwse metric: ', rwse_score)
 
     DelayFlights = pd.read_csv("ArrDelayFlights.csv",index_col=0)+pd.read_csv("DepDelayFlights.csv",index_col=0)
